@@ -14,31 +14,34 @@ import static android.R.attr.button;
 
 public class MainActivity extends AppCompatActivity {
     TextView tv;
-    static Myhandler mh;
+    Myhandler mh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SaveMainActivity.setMa(MainActivity.this);
+        Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+        startActivity(intent);
         tv = (TextView)findViewById(R.id.NotificationText);
         Intent i = new Intent(MainActivity.this, MyNotificationListenerService.class);
         startService(i);
     }
     public Myhandler getHandler(){
         if(this.mh ==null){
-            mh = new Myhandler();
+            this.mh = new Myhandler();
             return mh;
         }
         else
             return mh;
     }
 
-    class Myhandler extends Handler{
+    public class Myhandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
             // 此处可以更新UI
-            tv.append(msg.getData().toString());
+            tv.append(msg.getData().getString("title")+msg.getData().getString("content"));
         }
     }
 }
